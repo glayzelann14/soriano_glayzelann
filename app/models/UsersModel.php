@@ -32,10 +32,10 @@ class UsersModel extends Model {
                 $countQuery = clone $query;
 
                 $data['total_rows'] = $countQuery->select_count('*', 'count')
-                ->get()['count'];
+                                                ->get()['count'];
 
                 $data['records'] = $query->pagination($records_per_page, $page)
-                 ->get_all();
+                                        ->get_all();
 
                 return $data;
             }
