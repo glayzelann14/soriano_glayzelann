@@ -7,15 +7,15 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
  * Automatically generated via CLI.
  */
 
-    class UsersController extends Controller {
-        public function __construct()
-        {
-            parent::__construct();
-        }
-        public function index()
-        {
-        $this->call->model('UsersModel');
+class UsersController extends Controller {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->call->model('UsersModel'); // i-load once sa constructor
+    }
 
+    public function index()
+    {
         $page = 1;
         if(isset($_GET['page']) && ! empty($_GET['page'])) {
             $page = $this->io->get('page');
@@ -26,7 +26,7 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
             $q = trim($this->io->get('q'));
         }
 
-        $records_per_page = 10;
+        $records_per_page = 5;
 
         $user = $this->UsersModel->page($q, $records_per_page, $page);
         $data['user'] = $user['records'];
@@ -46,7 +46,6 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
         $this->call->view('users/index', $data);
     }
 
-
     public function create()
     {
         if($this->io->method() === 'post'){
@@ -55,42 +54,42 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 
             $data = [
                 'username' => $username,
-                'email' => $email
+                'email'    => $email
             ];
 
             if($this->UsersModel->insert($data)){
-                redirect();
+                redirect('users'); // ✅ redirect to index
             } else {
                 echo 'Failed to create user.';
             }
-        }else{
-           $this->call->view('users/create');
+        } else {
+            $this->call->view('users/create');
         }
-        
     }
 
-    function update($id)
+    public function update($id)
     {
         $user = $this->UsersModel->find($id);
         if (!$user) {
             echo "User not found.";
             return;
         }
+
         if($this->io->method() === 'post'){
             $username = $this->io->post('username');
             $email = $this->io->post('email');  
 
             $data = [
                 'username' => $username,
-                'email' => $email
+                'email'    => $email
             ];
 
             if($this->UsersModel->update($id, $data)){
-                redirect();
+                redirect('users'); // ✅ redirect to index
             } else {
                 echo 'Failed to update user.';
             }
-        }else{
+        } else {
             $data['user'] = $user;
             $this->call->view('users/update', $data);
         }
@@ -98,12 +97,10 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 
     public function delete($id)
     {
-        $this->call->model('UsersModel');
         if($this->UsersModel->delete($id)){
-            redirect();
+            redirect('users'); // ✅ redirect to index
         } else {
             echo 'Failed to delete user.';
         }
     }
-
 }
