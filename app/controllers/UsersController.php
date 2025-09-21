@@ -7,15 +7,15 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
  * Automatically generated via CLI.
  */
 
-class UsersController extends Controller {
-    public function __construct()
-    {
-        parent::__construct();
-        $this->call->model('UsersModel'); // i-load once sa constructor
-    }
-
+    class UsersController extends Controller {
+        public function __construct()
+        {
+            parent::__construct();
+        }
     public function index()
     {
+        $this->call->model('UsersModel');
+
         $page = 1;
         if(isset($_GET['page']) && ! empty($_GET['page'])) {
             $page = $this->io->get('page');
@@ -46,6 +46,7 @@ class UsersController extends Controller {
         $this->call->view('users/index', $data);
     }
 
+
     public function create()
     {
         if($this->io->method() === 'post'){
@@ -54,42 +55,42 @@ class UsersController extends Controller {
 
             $data = [
                 'username' => $username,
-                'email'    => $email
+                'email' => $email
             ];
 
             if($this->UsersModel->insert($data)){
-                redirect('users'); // ✅ redirect to index
+                redirect();
             } else {
                 echo 'Failed to create user.';
             }
-        } else {
-            $this->call->view('users/create');
+        }else{
+           $this->call->view('users/create');
         }
+        
     }
 
-    public function update($id)
+    function update($id)
     {
         $user = $this->UsersModel->find($id);
         if (!$user) {
             echo "User not found.";
             return;
         }
-
         if($this->io->method() === 'post'){
             $username = $this->io->post('username');
             $email = $this->io->post('email');  
 
             $data = [
                 'username' => $username,
-                'email'    => $email
+                'email' => $email
             ];
 
             if($this->UsersModel->update($id, $data)){
-                redirect('users'); // ✅ redirect to index
+                redirect();
             } else {
                 echo 'Failed to update user.';
             }
-        } else {
+        }else{
             $data['user'] = $user;
             $this->call->view('users/update', $data);
         }
@@ -97,10 +98,12 @@ class UsersController extends Controller {
 
     public function delete($id)
     {
+        $this->call->model('UsersModel');
         if($this->UsersModel->delete($id)){
-            redirect('users'); // ✅ redirect to index
+            redirect();
         } else {
             echo 'Failed to delete user.';
         }
     }
+
 }
