@@ -77,6 +77,9 @@
   <div class="flex items-center flex-wrap gap-2 bg-white px-4 py-3 rounded-md shadow text-sm text-gray-700">
     <?php 
       if (!empty($page)) {
+        // tanggalin ang <br> at gawing space lang
+        $page = str_replace('<br>', ' ', $page);
+
         echo str_replace(
           ['<a', '</a>', '<strong>', '</strong>'],
           [
@@ -91,6 +94,7 @@
     ?>
   </div>
 </div>
+
 
 
   <!-- Create Button -->
