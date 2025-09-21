@@ -1,101 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Directory</title>
-  <link rel="stylesheet" href="<?=base_url();?>/public/style.css">
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Students Info</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 20px; 
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .search-form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;              
+            margin-bottom: 30px;  
+            margin-right: 30px;
+            float: right;  
+        }
+
+        .search-form input {
+            width: 350px;           
+            padding: 10px 12px;     
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+        }
+
+        .search-form button {
+            padding: 10px 18px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 6px;
+        }
+        table {
+            width: 90%;
+            margin: 0 auto 25px;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+        }
+
+        th {
+            background: blue;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 14px;
+        }
+
+        td {
+            font-size: 15px;
+            color: #444;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background-color: #f7f9fc;
+            transition: background-color 0.3s ease;
+        }
+
+        a {
+            margin: 0 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        a[href*="update"] {
+            color: #fff;
+            background: #17a2b8;
+        }
+
+        a[href*="update"]:hover {
+            background: #138496;
+        }
+
+        a[href*="delete"] {
+            color: #fff;
+            background: #dc3545;
+        }
+
+        a[href*="delete"]:hover {
+            background: #b02a37;
+        }
+
+        
+        .button-container {
+            width: 100%;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .btn-create {
+            display: inline-block;
+            padding: 12px 22px;
+            background: linear-gradient(to right, #28a745, #20c997);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-create:hover {
+            background: linear-gradient(to right, #218838, #198754);
+            transform: translateY(-2px);
+        }
+
+      
+        @media (max-width: 768px) {
+            table {
+                width: 100%;
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+
+            .btn-create {
+                width: 90%;
+            }
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-pink-200 via-pink-100 to-pink-300 min-h-screen font-sans text-gray-800">
-
-  <!-- Navbar -->
-  <nav class="bg-gradient-to-r from-pink-600 to-pink-400 shadow-md">
-    <div class="max-w-7xl mx-auto px-6 py-4">
-      <a href="#" class="text-white font-semibold text-xl tracking-wide">📊 User Management</a>
+<body>
+    <h1>Students Info</h1>
+    <form action="<?=site_url('users');?>" method="get" class="col-sm-4 float-end d-flex search-form" class="search-form">
+		<?php
+		$q = '';
+		if(isset($_GET['q'])) {
+			$q = $_GET['q'];
+		}
+		?>
+        <input class="form-control me-2" name="q" type="text" placeholder="Search" value="<?=html_escape($q);?>">
+        <button type="submit" class="btn btn-primary" type="button">Search</button>	
+	</form>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Action</th>
+        </tr>
+        <?php foreach (html_escape($user) as $users): ?>
+        <tr>
+            <td><?=$users['id']; ?></td>
+            <td><?=$users['username']; ?></td>
+            <td><?=$users['email']; ?></td>
+            <td>
+                <a href="<?=site_url('/users/update/'.$users['id']);?>">Update</a>
+                <a href="<?=site_url('/users/delete/'.$users['id']);?>">Delete</a>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+    </table>
+    <?php
+	echo $page;?>
+    <div class="button-container">
+        <a href="<?=site_url('users/create'); ?>" class="btn-create">+ Create New User</a>
     </div>
-  </nav>
-
-  <!-- Main Content -->
-  <div class="max-w-6xl mx-auto mt-10 px-4">
-    <div class="bg-white bg-opacity-90 backdrop-blur-sm shadow-xl rounded-2xl p-6">
-      
-      <!-- Header -->
-      <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-semibold text-pink-600">👥 User Directory</h1>
-
-        <!-- Search Bar -->
-        <form method="get" action="<?=site_url()?>" class="flex">
-          <input 
-            type="text" 
-            name="q" 
-            value="<?=html_escape($_GET['q'] ?? '')?>" 
-            placeholder="Search student..." 
-            class="w-full border border-pink-200 bg-pink-50 rounded-l-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-800">
-          <button type="submit" class="bg-pink-500 hover:bg-pink-600 text-white px-4 rounded-r-xl transition">
-            🔍
-          </button>
-        </form>
-      </div>
-      
-      <!-- Table -->
-      <div class="overflow-x-auto rounded-xl border border-pink-200">
-        <table class="w-full text-center border-collapse">
-          <thead>
-            <tr class="bg-gradient-to-r from-pink-600 to-pink-400 text-white">
-              <th class="py-3 px-4">ID</th>
-              <th class="py-3 px-4">Username</th>
-              <th class="py-3 px-4">Email</th>
-              <th class="py-3 px-4">Action</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-100">
-            <?php foreach(html_escape($users) as $user): ?>
-              <tr class="hover:bg-pink-50 transition duration-200">
-                <td class="py-3 px-4"><?=($user['id']);?></td>
-                <td class="py-3 px-4"><?=($user['username']);?></td>
-                <td class="py-3 px-4">
-                  <span class="bg-pink-100 text-pink-700 text-sm font-medium px-3 py-1 rounded-full">
-                    <?=($user['email']);?>
-                  </span>
-                </td>
-                <td class="py-3 px-4 space-x-3">
-                  <!-- Update Button -->
-                  <a href="<?=site_url('users/update/'.$user['id']);?>"
-                     class="px-4 py-2 text-sm font-medium rounded-lg bg-pink-400 text-white hover:bg-pink-500 transition duration-200 shadow">
-                    ✏️ Update
-                  </a>
-                  <!-- Delete Button -->
-                  <a href="<?=site_url('users/delete/'.$user['id']);?>"
-                     onclick="return confirm('Are you sure you want to delete this record?');"
-                     class="px-4 py-2 text-sm font-medium rounded-lg bg-pink-600 text-white hover:bg-pink-700 transition duration-200 shadow">
-                    🗑️ Delete
-                  </a>
-                </td>
-              </tr>
-            <?php endforeach; ?>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Pagination -->
-      <div class="mt-6 flex justify-center space-x-2">
-        <a href="#" class="px-4 py-2 bg-pink-400 text-white rounded-lg hover:bg-pink-500 shadow">⏮ First</a>
-        <a href="#" class="px-4 py-2 bg-pink-300 text-white rounded-lg hover:bg-pink-400 shadow">← Prev</a>
-        <span class="px-4 py-2 bg-pink-500 text-white rounded-lg shadow">1</span>
-        <a href="#" class="px-4 py-2 bg-pink-300 text-white rounded-lg hover:bg-pink-400 shadow">Next →</a>
-        <a href="#" class="px-4 py-2 bg-pink-400 text-white rounded-lg hover:bg-pink-500 shadow">Last ⏭</a>
-      </div>
-
-      <!-- Create New User -->
-      <div class="mt-6 text-center">
-        <a href="<?=site_url('users/create')?>"
-           class="inline-block bg-pink-500 hover:bg-pink-600 text-white font-medium px-6 py-3 rounded-lg shadow-md transition duration-200">
-          ➕ Create New User
-        </a>
-      </div>
-    </div>
-  </div>
-
 </body>
 </html>
