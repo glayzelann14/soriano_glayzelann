@@ -34,7 +34,7 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
         'page_delimiter' => '&page='
     ]);
     $this->pagination->set_theme('bootstrap');
-    $this->pagination->initialize($total_rows, $records_per_page, $page, 'users?q=' . urlencode($q));
+    $this->pagination->initialize($total_rows, $records_per_page, $page, 'users?q=' . $q);
     $data['page'] = $this->pagination->paginate();
 
     $this->call->view('users/index', $data);
