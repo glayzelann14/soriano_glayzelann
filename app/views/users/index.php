@@ -74,8 +74,22 @@
 
   <!-- Pagination -->
   <div class="mt-6 flex justify-center">
-    <div class="bg-white px-4 py-2 rounded-md shadow text-sm text-gray-700">
-      <?= $page; ?>
+    <div class="flex items-center flex-wrap gap-2 bg-white px-4 py-3 rounded-md shadow text-sm text-gray-700">
+      <?php 
+        // Optional: check if $page exists
+        if (!empty($page)) {
+          echo str_replace(
+            ['<a', '</a>', '<strong>', '</strong>'],
+            [
+              '<a class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 transition"',
+              '</a>',
+              '<span class="px-3 py-1 font-semibold text-white bg-gray-800 rounded">',
+              '</span>'
+            ],
+            $page
+          );
+        }
+      ?>
     </div>
   </div>
 
