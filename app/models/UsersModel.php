@@ -19,9 +19,9 @@ class UsersModel extends Model {
     public function page($q = '', $records_per_page = null, $page = null) {
  
             if (is_null($page)) {
-                return $this->db->table('users')->get_all();
+                return $this->db->table('user')->get_all();
             } else {
-                $query = $this->db->table('users');
+                $query = $this->db->table('user');
 
                 // Build LIKE conditions
                 $query->like('id', '%'.$q.'%')
@@ -32,10 +32,10 @@ class UsersModel extends Model {
                 $countQuery = clone $query;
 
                 $data['total_rows'] = $countQuery->select_count('*', 'count')
-                                                ->get()['count'];
+                ->get()['count'];
 
                 $data['records'] = $query->pagination($records_per_page, $page)
-                                        ->get_all();
+                 ->get_all();
 
                 return $data;
             }
