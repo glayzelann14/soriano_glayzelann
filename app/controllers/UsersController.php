@@ -12,39 +12,34 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
         {
             parent::__construct();
         }
-    public function index()
+    
+       public function index()
     {
-        $this->call->model('UsersModel');
+    $this->call->model('UsersModel');
 
-        $page = 1;
-        if(isset($_GET['page']) && ! empty($_GET['page'])) {
-            $page = $this->io->get('page');
-        }
+    $page = !empty($_GET['page']) ? (int)$this->io->get('page') : 1;
+    $q    = !empty($_GET['q']) ? trim($this->io->get('q')) : '';
 
-        $q = '';
-        if(isset($_GET['q']) && ! empty($_GET['q'])) {
-            $q = trim($this->io->get('q'));
-        }
+    $records_per_page = 5;
 
-        $records_per_page = 5;
+    $result = $this->UsersModel->page($q, $records_per_page, $page);
+    $data['users'] = $result['records']; // ✅ plural
+    $total_rows    = $result['total_rows'];
 
-        $user = $this->UsersModel->page($q, $records_per_page, $page);
-        $data['user'] = $user['records'];
-        $total_rows = $user['total_rows'];
+    $this->pagination->set_options([
+        'first_link'     => '⏮ First',
+        'last_link'      => 'Last ⏭',
+        'next_link'      => 'Next →',
+        'prev_link'      => '← Prev',
+        'page_delimiter' => '&page='
+    ]);
+    $this->pagination->set_theme('bootstrap');
+    $this->pagination->initialize($total_rows, $records_per_page, $page, 'users?q=' . urlencode($q));
+    $data['page'] = $this->pagination->paginate();
 
-        $this->pagination->set_options([
-            'first_link'     => '⏮ First',
-            'last_link'      => 'Last ⏭',
-            'next_link'      => 'Next →',
-            'prev_link'      => '← Prev',
-            'page_delimiter' => '&page='
-        ]);
-        $this->pagination->set_theme('bootstrap');
-        $this->pagination->initialize($total_rows, $records_per_page, $page, 'users?q=' . $q);
-        $data['page'] = $this->pagination->paginate();
-
-        $this->call->view('users/index', $data);
+    $this->call->view('users/index', $data);
     }
+
 
 
     public function create()
