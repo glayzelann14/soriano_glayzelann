@@ -6,23 +6,25 @@
   <title>Students Info</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-700 p-6 font-sans">
-  <h1 class="text-3xl font-bold text-center text-white mb-6 tracking-wide">Students Info</h1>
+<body class="min-h-screen bg-gray-100 p-6 font-sans text-gray-800">
+
+  <!-- Header -->
+  <h1 class="text-3xl font-semibold text-center mb-8">Students Info</h1>
 
   <!-- Search Form -->
-  <form action="<?=site_url('users');?>" method="get" class="flex justify-end mb-6">
+  <form action="<?= site_url('users'); ?>" method="get" class="flex justify-end mb-6">
     <?php $q = isset($_GET['q']) ? $_GET['q'] : ''; ?>
-    <div class="flex space-x-2">
+    <div class="flex items-center space-x-2">
       <input 
-        class="w-80 px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-indigo-300 focus:outline-none"
+        class="w-80 px-4 py-2 rounded-md border border-gray-300 focus:ring-1 focus:ring-gray-500 focus:outline-none"
         name="q" 
         type="text" 
-        placeholder="Search" 
-        value="<?=html_escape($q);?>" 
+        placeholder="Search by name or email..." 
+        value="<?= html_escape($q); ?>" 
       />
       <button 
         type="submit" 
-        class="px-5 py-2 bg-indigo-600 text-white font-semibold rounded-md shadow hover:bg-indigo-700 transition">
+        class="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition">
         Search
       </button>
     </div>
@@ -30,8 +32,8 @@
 
   <!-- Table -->
   <div class="overflow-x-auto">
-    <table class="w-11/12 mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
-      <thead class="bg-indigo-700 text-white text-sm uppercase tracking-wide">
+    <table class="w-full max-w-6xl mx-auto bg-white border border-gray-200 rounded-lg shadow-sm">
+      <thead class="bg-gray-200 text-gray-700 text-sm uppercase">
         <tr>
           <th class="px-6 py-3 text-left">ID</th>
           <th class="px-6 py-3 text-left">Name</th>
@@ -39,41 +41,51 @@
           <th class="px-6 py-3 text-left">Action</th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-gray-200 text-gray-700">
-        <?php foreach (html_escape($user) as $users): ?>
-        <tr class="hover:bg-gray-50 transition">
-          <td class="px-6 py-3"><?=$users['id']; ?></td>
-          <td class="px-6 py-3"><?=$users['username']; ?></td>
-          <td class="px-6 py-3"><?=$users['email']; ?></td>
-          <td class="px-6 py-3 space-x-2">
-            <a href="<?=site_url('/users/update/'.$users['id']);?>" 
-              class="px-3 py-1 bg-cyan-600 text-white text-sm rounded-md shadow hover:bg-cyan-700 transition">
-              Update
-            </a>
-            <a href="<?=site_url('/users/delete/'.$users['id']);?>" 
-              class="px-3 py-1 bg-red-600 text-white text-sm rounded-md shadow hover:bg-red-700 transition">
-              Delete
-            </a>
-          </td>
-        </tr>
-        <?php endforeach; ?>
+      <tbody class="text-sm divide-y divide-gray-100">
+        <?php if (empty($user)): ?>
+          <tr>
+            <td colspan="4" class="px-6 py-4 text-center text-gray-500">No users found.</td>
+          </tr>
+        <?php else: ?>
+          <?php foreach ($user as $users): ?>
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-3"><?= html_escape($users['id']); ?></td>
+              <td class="px-6 py-3"><?= html_escape($users['username']); ?></td>
+              <td class="px-6 py-3"><?= html_escape($users['email']); ?></td>
+              <td class="px-6 py-3 space-x-2">
+                <a 
+                  href="<?= site_url('/users/update/' . $users['id']); ?>" 
+                  class="inline-block px-3 py-1 bg-gray-700 text-white text-xs rounded hover:bg-gray-600 transition">
+                  Update
+                </a>
+                <a 
+                  href="<?= site_url('/users/delete/' . $users['id']); ?>" 
+                  onclick="return confirm('Are you sure you want to delete this user?');"
+                  class="inline-block px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-500 transition">
+                  Delete
+                </a>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+        <?php endif; ?>
       </tbody>
     </table>
   </div>
 
   <!-- Pagination -->
   <div class="mt-6 flex justify-center">
-    <div class="bg-white px-4 py-2 rounded-md shadow text-gray-700">
-      <?php echo $page; ?>
+    <div class="bg-white px-4 py-2 rounded-md shadow text-sm text-gray-700">
+      <?= $page; ?>
     </div>
   </div>
 
   <!-- Create Button -->
-  <div class="text-center mt-6">
-    <a href="<?=site_url('users/create'); ?>" 
-      class="inline-block px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-500 text-white font-semibold rounded-md shadow hover:from-green-700 hover:to-emerald-600 transition">
+  <div class="text-center mt-8">
+    <a href="<?= site_url('users/create'); ?>" 
+      class="inline-block px-6 py-3 bg-gray-800 text-white rounded-md text-sm hover:bg-gray-700 transition">
       + Create New User
     </a>
   </div>
+
 </body>
 </html>
