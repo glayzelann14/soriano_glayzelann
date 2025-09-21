@@ -29,7 +29,7 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
         $records_per_page = 5;
 
         $user = $this->UsersModel->page($q, $records_per_page, $page);
-        $data['users'] = $user['records'];
+        $data['user'] = $user['records'];
         $total_rows = $user['total_rows'];
 
         $this->pagination->set_options([
