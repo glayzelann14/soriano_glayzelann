@@ -29,7 +29,7 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
         $records_per_page = 5;
 
         $user = $this->UsersModel->page($q, $records_per_page, $page);
-        $data['user'] = $user['records'];
+        $data['users'] = $user['records'];
         $total_rows = $user['total_rows'];
 
         $this->pagination->set_options([
@@ -40,7 +40,7 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
             'page_delimiter' => '&page='
         ]);
         $this->pagination->set_theme('bootstrap');
-        $this->pagination->initialize($total_rows, $records_per_page, $page, 'user?q=' . $q);
+        $this->pagination->initialize($total_rows, $records_per_page, $page, 'users?q=' . $q);
         $data['page'] = $this->pagination->paginate();
 
         $this->call->view('users/index', $data);
