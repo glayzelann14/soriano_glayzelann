@@ -1,104 +1,44 @@
+
 <?php
 defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 
 /**
- * Controller: UsersController
+ * Model: UsersModel
  * 
  * Automatically generated via CLI.
  */
+class UsersModel extends Model {
+    protected $table = 'user';
+    protected $primary_key = 'id';
 
-    class UsersController extends Controller {
-        public function __construct()
-        {
-            parent::__construct();
-        }
-    
-       public function index()
+    public function __construct()
     {
-    $this->call->model('UsersModel');
-
-    $page = !empty($_GET['page']) ? (int)$this->io->get('page') : 1;
-    $q    = !empty($_GET['q']) ? trim($this->io->get('q')) : '';
-
-    $records_per_page = 5;
-
-    $result = $this->UsersModel->page($q, $records_per_page, $page);
-    $data['user'] = $result['records']; // ✅ plural
-    $total_rows    = $result['total_rows'];
-
-    $this->pagination->set_options([
-        'first_link'     => '⏮ First',
-        'last_link'      => 'Last ⏭',
-        'next_link'      => 'Next →',
-        'prev_link'      => '← Prev',
-        'page_delimiter' => '&page='
-    ]);
-    $this->pagination->set_theme('bootstrap');
-    $this->pagination->initialize($total_rows, $records_per_page, $page, 'users?q=' . $q);
-    $data['page'] = $this->pagination->paginate();
-
-    $this->call->view('users/index', $data);
+        parent::__construct();
     }
 
-
-
-    public function create()
-    {
-        if($this->io->method() === 'post'){
-            $username = $this->io->post('username');
-            $email = $this->io->post('email');  
-
-            $data = [
-                'username' => $username,
-                'email' => $email
-            ];
-
-            if($this->UsersModel->insert($data)){
-                redirect();
+    public function page($q = '', $records_per_page = null, $page = null) {
+ 
+            if (is_null($page)) {
+                return $this->db->table('user')->get_all();
             } else {
-                echo 'Failed to create user.';
+                $query = $this->db->table('user');
+
+                // Build LIKE conditions
+                $query->like('id', '%'.$q.'%')
+                    ->or_like('username', '%'.$q.'%')
+                    ->or_like('email', '%'.$q.'%');
+                    
+                // Clone before pagination
+                $countQuery = clone $query;
+
+                $data['total_rows'] = $countQuery->select_count('*', 'count')
+                                                ->get()['count'];
+
+                $data['records'] = $query->pagination($records_per_page, $page)
+                                        ->get_all();
+
+                return $data;
             }
-        }else{
-           $this->call->view('users/create');
         }
-        
-    }
-
-    function update($id)
-    {
-        $user = $this->UsersModel->find($id);
-        if (!$user) {
-            echo "User not found.";
-            return;
-        }
-        if($this->io->method() === 'post'){
-            $username = $this->io->post('username');
-            $email = $this->io->post('email');  
-
-            $data = [
-                'username' => $username,
-                'email' => $email
-            ];
-
-            if($this->UsersModel->update($id, $data)){
-                redirect();
-            } else {
-                echo 'Failed to update user.';
-            }
-        }else{
-            $data['user'] = $user;
-            $this->call->view('users/update', $data);
-        }
-    }
-
-    public function delete($id)
-    {
-        $this->call->model('UsersModel');
-        if($this->UsersModel->delete($id)){
-            redirect();
-        } else {
-            echo 'Failed to delete user.';
-        }
-    }
 
 }
