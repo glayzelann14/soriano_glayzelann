@@ -188,7 +188,7 @@
     </table>
     <?php
 	echo $page;?>
-    <div class="button-container">
+    <div class="button-container"> 
         <a href="<?=site_url('users/create'); ?>" class="btn-create">+ Create New User</a>
     </div>
 </body>
