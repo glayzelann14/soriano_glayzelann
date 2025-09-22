@@ -28,7 +28,7 @@ class UsersController extends Controller {
         $records_per_page = 10;
 
         $users = $this->UsersModel->page($q, $records_per_page, $page);
-        $data['users'] = $users['records'];
+        $data['user'] = $users['records'];
         $total_rows = $users['total_rows'];
         $this->pagination->set_options([
             'first_link'     => '⏮ First',
@@ -38,7 +38,7 @@ class UsersController extends Controller {
             'page_delimiter' => '&page='
         ]);
         $this->pagination->set_theme('bootstrap'); // or 'tailwind', or 'custom'
-        $this->pagination->initialize($total_rows, $records_per_page, $page, 'users?q='.$q);
+        $this->pagination->initialize($total_rows, $records_per_page, $page, 'user?q='.$q);
         $data['page'] = $this->pagination->paginate();
         $this->call->view('users/index', $data);
     
